@@ -275,7 +275,7 @@ def plotMe(data):
     x = []
     y = []
     for point in data:
-        #        pass #EXTRACT SHIT
+        #        pass #EXTRACT WASTE
         
         if 'NOT' in point:
             if not passing:
@@ -411,7 +411,8 @@ while True:
     elif action == "makeFigure":
         
         fiberToPlot = raw_input("which fiber do you want to plot? You can say one of ["+"/".join(known_fibers)+"] ")
-        plotMe(getFiberHistory(fiberToPlot, dataPoints))    
+        plotMe(getFiberHistory(fiberToPlot, dataPoints))
+
     elif action == "save":
         save(dataPoints)
 
@@ -442,6 +443,28 @@ while True:
     elif action == "exit":
         print "goodbye"
         break
-
         
     time.sleep(1) ### magic number are evil, but this is pretty innocent. This will sleep for 1 second before continuing the loop 
+
+'''
+        print "by \"makeFigure\" I assume you mean make a histogram of the values of \"b\" recorded"
+        figname = raw_input("what do you want to call your figure?")
+        
+        fig = plt.figure()
+        ax = fig.gca() ### get current axis
+
+        ### extract the data I want toTHan plot
+        data = [d.data["b"] for d in dataPoints]
+
+        ax.hist( data, bins=10, label="b")        
+
+        ax.set_xlabel("b")
+        ax.set_ylabel("count")
+
+        ax.grid(True)
+
+        ax.legend(loc='upper right')
+
+        fig.savefig( figname )
+        plt.close( fig )
+''' 

@@ -100,7 +100,7 @@ class dataPoint(object):
     def __init__(self, name):
         self.name = name
         self.setup = None
-        #self.data = dict((col, None) for col in known_columns)
+        #equivalently, self.data = dict((col, None) for col in known_columns)
         self.data = dict() #equivalently, self.data = {}
 
     #sychronizes self.data with setupDictionary according to the appropriate setup of fibers and feedthroughs
@@ -283,6 +283,7 @@ def plotMe(data):
     x = []
     y = []
     for point in data:
+        #pass #EXTRACT WASTE
         if 'NOT' in point:
             if not passing:
                 passing = True
@@ -444,9 +445,9 @@ while True:
         figname = raw_input("what do you want to call your figure?")
         
         fig = plt.figure()
-        ax = fig.gca() ###get current axis
+        ax = fig.gca() #get current axis
 
-        ###extract the data I want toTHan plot
+        #extract the data I want to plot
         data = [d.data["b"] for d in dataPoints]
 
         ax.hist(data, bins=10, label="b")        

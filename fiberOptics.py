@@ -29,24 +29,34 @@ global known_columns_types
 #SETUPS
 known_setups = ["F","FF","FT","FFF","FTF"] ### the list of possible setups F = Fiber and T = Feedthrough
 
-kc_F       = ["day", "month", "year", "hour", "minute", "redPower(mW)", "greenPowerIn(mW)", "coupler", "fiberFirstConnector", "fiber", "greenPowerOut1(mW)"] ### the list of columns that each data point MUST have
+kc_F       = ["day", "month", "year", "hour", "minute", "redPower(mW)", "greenPowerIn(mW)", "coupler", \
+"fiberFirstConnector", "fiber", "greenPowerOut1(mW)"] ### the list of columns that each data point MUST have
 kc_setup_F       = ["coupler", "fiberFirstConnector", "fiber"] ### the list of columns that define
-kct_F = [int, int, int, int, int, float, float, str, str, str, float] ### the types for the columns. THE ORDER MATTERS and this must have the same length as known_columns
+kct_F = [int, int, int, int, int, float, float, str, str, str, float]
+### the types for the columns. THE ORDER MATTERS and this must have the same length as known_columns
 
-kc_FF = ["day", "month", "year", "hour", "minute", "redPower(mW)", "greenPowerIn(mW)", "coupler", "fiber1FirstConnector", "fiber1", "greenPowerOut1(mW)", "sleeve", "fiber2FirstConnector", "fiber2", "greenPowerOut2(mW)"]
+kc_FF = ["day", "month", "year", "hour", "minute", "redPower(mW)", "greenPowerIn(mW)", "coupler", "fiber1FirstConnector", \
+"fiber1", "greenPowerOut1(mW)", "sleeve", "fiber2FirstConnector", "fiber2", "greenPowerOut2(mW)"]
 kc_setup_FF = ["coupler", "fiber1FirstConnector", "fiber1", "sleeve", "fiber2FirstConnector", "fiber2"]
 kct_FF = [int, int, int, int, int, float, float, str, str, str, float, str, str, str, float]
 
-kc_FT = ["day", "month", "year", "hour", "minute", "redPower(mW)", "greenPowerIn(mW)", "coupler", "fiber1FirstConnector", "fiber1", "greenPowerOut1(mW)", "sleeve", "feedthroughFirstConnector", "feedthroguh", "greenPowerOut2(mW)"]
+kc_FT = ["day", "month", "year", "hour", "minute", "redPower(mW)", "greenPowerIn(mW)", "coupler", "fiber1FirstConnector", \
+"fiber1", "greenPowerOut1(mW)", "sleeve", "feedthroughFirstConnector", "feedthroguh", "greenPowerOut2(mW)"]
 kc_setup_FT = ["coupler", "fiber1FirstConnector", "fiber1", "sleeve", "feedthroughFirstConnector", "feedthroguh"]
 kct_FT = [int, int, int, int, int, float, float, str, str, str, float, str, str, str, float]
 
-kc_FFF = ["day", "month", "year", "hour", "minute", "redPower(mW)", "greenPowerIn(mW)", "coupler", "fiber1FirstConnector", "fiber1", "greenPowerOut1(mW)", "sleeve1", "fiber2FirstConnector", "fiber2", "greenPowerOut2(mW)", "sleeve2", "fiber3FirstConnector", "fiber3", "greenPowerOut3(mW)"]
-kc_setup_FFF = ["coupler", "fiber1FirstConnector", "fiber1", "sleeve1", "fiber2FirstConnector", "fiber2", "sleeve2", "fiber3FirstConnector", "fiber3"]
+kc_FFF = ["day", "month", "year", "hour", "minute", "redPower(mW)", "greenPowerIn(mW)", "coupler", "fiber1FirstConnector", \
+"fiber1", "greenPowerOut1(mW)", "sleeve1", "fiber2FirstConnector", "fiber2", "greenPowerOut2(mW)", "sleeve2", \
+"fiber3FirstConnector", "fiber3", "greenPowerOut3(mW)"]
+kc_setup_FFF = ["coupler", "fiber1FirstConnector", "fiber1", "sleeve1", "fiber2FirstConnector", "fiber2", "sleeve2", \
+"fiber3FirstConnector", "fiber3"]
 kct_FFF = [int, int, int, int, int, float, float, str, str, str, float, str, str, str, float, str, str, str, float]
 
-kc_FTF = ["day", "month", "year", "hour", "minute", "redPower(mW)", "greenPowerIn(mW)", "coupler", "fiber1FirstConnector", "fiber1", "greenPowerOut1(mW)", "sleeve1", "feedthroughFirstConnector", "feedthroguh", "greenPowerOut2(mW)", "sleeve2", "fiber3FirstConnector", "fiber3", "greenPowerOut3(mW)"]
-kc_setup_FTF = ["coupler", "fiber1FirstConnector", "fiber1", "sleeve1", "feedthroughFirstConnector", "feedthroguh", "sleeve2", "fiber3FirstConnector", "fiber3"]
+kc_FTF = ["day", "month", "year", "hour", "minute", "redPower(mW)", "greenPowerIn(mW)", "coupler", "fiber1FirstConnector", \
+"fiber1", "greenPowerOut1(mW)", "sleeve1", "feedthroughFirstConnector", "feedthroguh", "greenPowerOut2(mW)", "sleeve2", \
+"fiber3FirstConnector", "fiber3", "greenPowerOut3(mW)"]
+kc_setup_FTF = ["coupler", "fiber1FirstConnector", "fiber1", "sleeve1", "feedthroughFirstConnector", "feedthroguh", \
+"sleeve2", "fiber3FirstConnector", "fiber3"]
 kct_FTF = [int, int, int, int, int, float, float, str, str, str, float, str, str, str, float, str, str, str, float]
 
 kc_dict = {'STOP':["STOP"], 'F': kc_F, 'FF': kc_FF, 'FFF': kc_FFF, 'FT': kc_FT, 'FTF': kc_FTF}
@@ -79,7 +89,9 @@ line_connectors = {'A': '-', 'B': '--'}
 known_actions = ["enterData", "printData", "makeFigure", "save", "load", "notifyStop", "exit"]
 
 #POWER DICTIONARY
-powerList = [{'name': "Very High Power", 'min': 250, 'max': 350}, {'name': "High Power", 'min': 200, 'max': 250}, {'name': "Medium Power", 'min': 100, 'max': 200}, {'name': "Low Power", 'min': 50, 'max': 100}, {'name': "Very Low Power", 'min': 0, 'max': 50}]
+powerList = [{'name': "Very High Power", 'min': 250, 'max': 350}, {'name': "High Power", 'min': 200, 'max': 250}, \
+{'name': "Medium Power", 'min': 100, 'max': 200}, {'name': "Low Power", 'min': 50, 'max': 100}, \
+{'name': "Very Low Power", 'min': 0, 'max': 50}]
 
 #------------------------------------
 
@@ -95,6 +107,7 @@ class dataPoint(object):
         self.data = dict() ### equivalently, self.data = {}
 
     def completeSetup(self, setup, setupDictionary):
+        ### sychronizes self.data with setupDictionary according to the appropriate setup of fibers and feedthroughs
         self.setup = setup
         for col in kc_dict[setup]:
             if col in setupDictionary:
@@ -144,7 +157,8 @@ def save(dataPoints):
             #            print str(thisDataPoint.name)
             #print str(thisDataPoint.setup)
             #print " ".join(str(thisDataPoint.data[col]) for col in kc_dict[thisDataPoint.setup])
-            print >> file_obj, str(thisDataPoint.name) + " " + str(thisDataPoint.setup) + " " + " ".join(str(thisDataPoint.data[col]) for col in kc_dict[thisDataPoint.setup])
+            print >> file_obj, str(thisDataPoint.name) + " " + str(thisDataPoint.setup) + \
+            " " + " ".join(str(thisDataPoint.data[col]) for col in kc_dict[thisDataPoint.setup])
         file_obj.close()
 
 
@@ -153,7 +167,8 @@ def asignateNumber(fiber):
 
 def getTime (dataPoint):
     print dataPoint.data['minute']
-    return datetime.datetime(dataPoint.data['year'], dataPoint.data['month'], dataPoint.data['day'], dataPoint.data['hour'], dataPoint.data['minute'])
+    return datetime.datetime(dataPoint.data['year'], dataPoint.data['month'], dataPoint.data['day'], \
+        dataPoint.data['hour'], dataPoint.data['minute'])
 
 def definePower (inPower):
     power = None
@@ -170,16 +185,23 @@ def definePower (inPower):
 def getFiberInfo(position, dataPoint):
     info = {}
     if position == 1:
-        info = {'time': getTime(dataPoint), 'pos': position, 'coupler': dataPoint.data['coupler'], 'firstConnector': dataPoint.data["fiber"+str(position)+"FirstConnector"], 'transmission': dataPoint.data['greenPowerOut1(mW)']/dataPoint.data['greenPowerIn(mW)'], 'power': definePower(dataPoint.data['greenPowerIn(mW)'])}
+        info = {'time': getTime(dataPoint), 'pos': position, 'coupler': dataPoint.data['coupler'], 'firstConnector': \
+        dataPoint.data["fiber"+str(position)+"FirstConnector"], 'transmission': \
+        dataPoint.data['greenPowerOut1(mW)']/dataPoint.data['greenPowerIn(mW)'], 'power': \
+        definePower(dataPoint.data['greenPowerIn(mW)'])}
     elif position == 2 or position==3:
-        info = {'time': getTime(dataPoint), 'pos': position, 'sleeve': dataPoint.data["sleeve"+str(position-1)], 'firstConnector': dataPoint.data["fiber"+str(position)+"FirstConnector"], 'transmission': dataPoint.data["greenPowerOut"+str(position)+"(mW)"]/dataPoint.data["greenPowerOut"+str(position-1)+"(mW)"], 'power': definePower(dataPoint.data["greenPowerOut"+str(position-1)+"(mW)"])}
+        info = {'time': getTime(dataPoint), 'pos': position, 'sleeve': dataPoint.data["sleeve"+str(position-1)], \
+        'firstConnector': dataPoint.data["fiber"+str(position)+"FirstConnector"], 'transmission': \
+        dataPoint.data["greenPowerOut"+str(position)+"(mW)"]/dataPoint.data["greenPowerOut"+str(position-1)+"(mW)"], \
+        'power': definePower(dataPoint.data["greenPowerOut"+str(position-1)+"(mW)"])}
     else:
         print "This position of the fiber is not possible"
 
     return info
 
 
-# returns a dictionary with the information (time, position, etc.) of a particular fiber, given a fiber and a data point. returns and empty dictionary otherwise
+# returns a dictionary with the information (time, position, etc.) of a particular fiber, given a fiber and a data point.
+#returns and empty dictionary otherwise
 def getFiberInDataPoint(dataPoint, fiber):
     fiberInDataPointInfo = {}
     if fiber not in known_fibers:

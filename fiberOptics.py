@@ -131,9 +131,9 @@ class dataPoint(object):
 #---------------------------------------------------------------------
 
 #fills and returns setupDictionary with requested input for the values of the components of a given setup
-def readSetup(setup):
-    setupDictionary[setup] = setup
-    for col in kc_setup_dict[setup]: #for each of the component names in a specific setup
+def readSetup(inSetup):
+    setupDictionary['setup'] = inSetup
+    for col in kc_setup_dict[inSetup]: #for each of the component names in a specific setup
         setupDictionary[col] = str(raw_input("what is the value for  "+col+" : "))  
     return setupDictionary
     #a, b = makeMommaProud(1,1)

@@ -308,7 +308,7 @@ def plotMe(data):
             y.add(point['transmission'])
             previousTime = actualTime
             previousPower = actualPower
-            #ax_H.plot(x,y,color=asignedColor,linestyle=asignedStyle, markerstyle="none", label=None, linewidth=asignedWidth)
+            #ax_H.plot(x,y,color=assignedColor,linestyle=assignedStyle, markerstyle="none", label=None, linewidth=assignedWidth)
 
     xmin = numpy.infty
     xmax = - numpy.infty

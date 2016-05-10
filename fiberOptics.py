@@ -6,7 +6,7 @@
 
 usage = "fiberOptics [--options]"
 description = "the greatest code in the world"
-author = "Reed Essick and Alvaro Fernandez"
+author = "Reed Essick, Aditya Mahadevan and Alvaro Fernandez"
 
 #---------------------------------------------------------------------
 

@@ -106,7 +106,7 @@ class dataPoint(object):
     #sychronizes self.data with setupDictionary according to the appropriate setup of fibers and feedthroughs
     def completeSetup(self, setup, setupDictionary):
         self.setup = setup
-        for col in kc_dict[setup]:
+        for col in kc_dict[setup]: #for every parameter name in the (kc_) list pertaining to the specified setup
             if col in setupDictionary:
                 self.data[col] = setupDictionary[col]
             else:
@@ -130,13 +130,15 @@ class dataPoint(object):
 
 #---------------------------------------------------------------------
 
+#fills and returns setupDictionary with requested input for the values of the components of a given setup
 def readSetup(setup):
     setupDictionary[setup] = setup
-    for col in kc_setup_dict[setup]:
+    for col in kc_setup_dict[setup]: #for each of the component names in a specific setup
         setupDictionary[col] = str(raw_input("what is the value for  "+col+" : "))  
     return setupDictionary
     #a, b = makeMommaProud(1,1)
 
+#saves a list of dataPoints to a file
 def save(dataPoints):
     if not dataPoints:
         "There is nothing to save"
@@ -153,6 +155,7 @@ def save(dataPoints):
             " " + " ".join(str(thisDataPoint.data[col]) for col in kc_dict[thisDataPoint.setup])
         file_obj.close()
 
+#returns 1, 2, or 3 depending on the order of the specific fiber
 def assignNumber(fiber):
     return int(list(fiber)[5])
 

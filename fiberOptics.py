@@ -19,7 +19,7 @@ import datetime
 import matplotlib
 matplotlib.use("Agg")
 #from matplotlib import pyplot as plt
-import pylab as plt
+import matplotlib.pyplot as plt
 
 #---------------------------------------------------------------------
 
@@ -155,7 +155,7 @@ def save(dataPoints):
             " " + " ".join(str(thisDataPoint.data[col]) for col in kc_dict[thisDataPoint.setup])
         file_obj.close()
 
-#returns 1, 2, or 3 depending on the order of the specific fiber
+#returns 1, 2, or 3 depending on the order of the operative fiber
 def assignNumber(fiber):
     return int(list(fiber)[5])
 
@@ -170,7 +170,7 @@ def definePower (inPower):
         if inPower>= range['min'] and inPower< range['max']:
             power = range['name']
         if not power:
-            print "This is power is out of the range. Power = "+inPower+" !!"
+            print "This power is out of range. Power = "+inPower+" !!"
             #print str(inPower)
     return power
 
@@ -257,16 +257,17 @@ def setPlotLabels(listOfPlots):
 #defines and sets the list of plots according to the list of power
 def createPlots():
     plotsList = []
-    lenght = len(powerList)
+    length = len(powerList)
     i = 1
-    while i<=lenght:
-        newPlot = plt.subplot(lenght,1,i)
+    while i<=length:
+        newPlot = plt.subplot(length,1,i)
         plotsList.append(newPlot)
         i = i+1
     return plotsList
 
 #---------------------------------------------------------------------
 
+#takes in a list of dictionaries (the output from getFiberHistory()) and makes a plot
 def plotMe(data):
     fig = plt.figure()
     plotList = createPlots()
@@ -279,10 +280,18 @@ def plotMe(data):
     totalHTime = datetime.timedelta()
     totalLTime = datetime.timedelta()
     timeDifference = datetime.timedelta()
-    previousTime = data[0]['time']
+    #finds the index of the first element of data that is not {'NOT': "NOT"}
+    i = 0
+    for dictn in data:
+        if dictn == {'NOT': "NOT"}:
+            i = i + 1
+        else:
+            break
+    #print data[i]
+    previousTime = data[i]['time']
     actualTime = datetime.timedelta(1991,7,18)
     actualPower = None
-    previousPower = data[0]['power']
+    previousPower = data[i]['power']
     x = []
     y = []
     for point in data:
@@ -307,8 +316,8 @@ def plotMe(data):
                     #else:
             timeDifference = actualTime - previousTime
             totalTime =+ timeDifference
-            x.add(timeToValue(totalTime))
-            y.add(point['transmission'])
+            x.append(timeToValue(totalTime))
+            y.append(point['transmission'])
             previousTime = actualTime
             previousPower = actualPower
             #ax_H.plot(x,y,color=assignedColor,linestyle=assignedStyle, markerstyle="none", label=None, linewidth=assignedWidth)
@@ -347,7 +356,7 @@ def plotMe(data):
 dataPoints = [] #instantiate an empty list object
 setup = "No defined setup"
 setupDictionary = {}
-'''
+
 file_obj = open("fiber.txt", "r")
     #       cols = file_obj.readline().strip().split()[1:]
     #if cols != known_columns:
@@ -364,10 +373,10 @@ setup = newDataPoint.setup
 file_obj.close()
 
 plotMe(getFiberHistory("1A", dataPoints))
-'''
+
 
 #---------------------------------------------------------------------
-
+'''
 #USER INTERFACE
 while True:
 
@@ -442,7 +451,7 @@ while True:
         break
         
     time.sleep(1) #sleep for 1 second before continuing the loop 
-
+'''
 '''
         print "by \"makeFigure\" I assume you mean make a histogram of the values of \"b\" recorded"
         figname = raw_input("what do you want to call your figure?")

@@ -227,7 +227,7 @@ def getFiberHistory (fiber, dataPoints):
     return fiberInfo
 
 
-#sets the type/color/etc. of lines of the plots
+#sets the type/color/etc. of lines of the plots, given a dictionary
 def defineArgs(point):
     selectedColor = 'k'
     selectedStyle = ':'
@@ -265,6 +265,25 @@ def createPlots():
         i = i+1
     return plotsList
 
+#converts a given datetime into one type of unit (y,w,d,h,m,s)
+def timeToValue(inDT, unit):
+    time = inDT.total_seconds()
+    if unit == 'y':
+        time = time/31449600
+    elif unit == 'w':
+        time = time/604800
+    elif unit == 'd':
+        time = time/86400
+    elif unit == 'h':
+        time = time/3600
+    elif unit == 'm':
+        time = time/60
+    elif unit == 's':
+        pass
+    else:
+        print ("I do not understand those units. Please use one of [y,w,d,h,m,s]")
+    return time
+
 #---------------------------------------------------------------------
 
 #takes in a list of dictionaries (the output from getFiberHistory()) and makes a plot
@@ -295,7 +314,6 @@ def plotMe(data):
     x = []
     y = []
     for point in data:
-        #pass #EXTRACT WASTE
         if 'NOT' in point:
             if not passing:
                 passing = True
@@ -312,11 +330,11 @@ def plotMe(data):
                 kwargs = defineArgs(point)
                 selectPlot(previousPower, plotList).plot(x,y,**kwargs)
                 #if passing:
-                    #x.add(timeToValue(totalTime))
+                    #x.add(timeToValue(totalTime 'h'))
                     #else:
             timeDifference = actualTime - previousTime
-            totalTime =+ timeDifference
-            x.append(timeToValue(totalTime))
+            totalTime += timeDifference #datetime
+            x.append(timeToValue(totalTime, 'h'))
             y.append(point['transmission'])
             previousTime = actualTime
             previousPower = actualPower

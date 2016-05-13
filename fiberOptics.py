@@ -88,6 +88,9 @@ line_connectors = {'A': '-', 'B': '--'}
 #ACTIONS
 known_actions = ["enterData", "printData", "makeFigure", "save", "load", "notifyStop", "exit"]
 
+#UNITS
+known_units = ['y','w','d','h','m','s']
+
 #POWER DICTIONARY
 powerList = [{'name': "Very High Power", 'min': 250, 'max': 350}, {'name': "High Power", 'min': 200, 'max': 250}, \
 {'name': "Medium Power", 'min': 100, 'max': 200}, {'name': "Low Power", 'min': 50, 'max': 100}, \
@@ -280,14 +283,12 @@ def timeToValue(inDT, unit):
         time = time/60
     elif unit == 's':
         pass
-    else:
-        print ("I do not understand those units. Please use one of [y,w,d,h,m,s]")
     return time
 
 #---------------------------------------------------------------------
 
 #takes in a list of dictionaries (the output from getFiberHistory()) and makes a plot
-def plotMe(data):
+def plotMe(data, unit):
     fig = plt.figure()
     plotList = createPlots()
     #ax_H = plt.subplot(2,1,1) #2 rows, 1 column, 1 at panel
@@ -306,7 +307,7 @@ def plotMe(data):
             i = i + 1
         else:
             break
-    #print data[i]
+
     previousTime = data[i]['time']
     actualTime = datetime.timedelta(1991,7,18)
     actualPower = None
@@ -314,6 +315,7 @@ def plotMe(data):
     x = []
     y = []
     for point in data:
+        print point
         if 'NOT' in point:
             if not passing:
                 passing = True
@@ -330,11 +332,11 @@ def plotMe(data):
                 kwargs = defineArgs(point)
                 selectPlot(previousPower, plotList).plot(x,y,**kwargs)
                 #if passing:
-                    #x.add(timeToValue(totalTime 'h'))
+                    #x.add(timeToValue(totalTime unit))
                     #else:
             timeDifference = actualTime - previousTime
             totalTime += timeDifference #datetime
-            x.append(timeToValue(totalTime, 'h'))
+            x.append(timeToValue(totalTime, unit))
             y.append(point['transmission'])
             previousTime = actualTime
             previousPower = actualPower
@@ -390,7 +392,7 @@ for line in file_obj:
 setup = newDataPoint.setup
 file_obj.close()
 
-plotMe(getFiberHistory("1A", dataPoints))
+plotMe(getFiberHistory("1A", dataPoints), 'h')
 
 
 #---------------------------------------------------------------------
@@ -435,28 +437,44 @@ while True:
             dataPoint.printToTerminal()
 
     elif action == "makeFigure":
-        fiberToPlot = raw_input("which fiber do you want to plot? You can say one of ["+"/".join(known_fibers)+"] ")
-        plotMe(getFiberHistory(fiberToPlot, dataPoints))
+        fiberToPlot = raw_input("which fiber do you want to plot? You can say one of ["+"/".join(known_fibers)+"]")
+        while fiberToPlot not in known_fibers:
+            fiberToPlot = raw_input("I do not recognize that fiber. You can say one of ["+"/".join(known_fibers)+"]")
+
+        un = raw_input("what units do you want to use for time? You can say one of ["+"/".join(known_units)+"]")
+        while un not in known_units:
+            un = raw_input("I do not recognize those units. You can say one of ["+"/".join(known_units)+"]")
+        plotMe(getFiberHistory(fiberToPlot, dataPoints), un)
 
     elif action == "save":
         save(dataPoints)
 
     elif action == "load":
+        t = True
         filename = raw_input("what filename do you want to load?")
-        file_obj = open(filename, "r")
+        while t:
+            if filename == 'q':
+                break
+            try:
+                file_obj = open(filename, "r")
+                for line in file_obj:
+                    line = line.strip().split()
+                    newDataPoint = dataPoint(float(line[0]))
+                    newDataPoint.setup = str(line[1])
+                    for ind, (cast2type, col) in enumerate(zip(kct_dict[newDataPoint.setup], kc_dict[newDataPoint.setup])):
+                            newDataPoint.data[col] = cast2type(line[ind+2])
+                    dataPoints.append(newDataPoint)
+                setup = newDataPoint.setup
+                file_obj.close()
+                print "File loaded!"
+                t = False
+            except IOError:
+                filename = raw_input("No such file. Try again! (Enter 'q' to exit)")
+
         #cols = file_obj.readline().strip().split()[1:]
         #if cols != known_columns:
            #print "whoops! looks like the columns don't match what I expected"
         #else:
-        for line in file_obj:
-            line = line.strip().split()
-            newDataPoint = dataPoint(float(line[0]))
-            newDataPoint.setup = str(line[1])
-            for ind, (cast2type, col) in enumerate(zip(kct_dict[newDataPoint.setup], kc_dict[newDataPoint.setup])):
-                    newDataPoint.data[col] = cast2type(line[ind+2])
-            dataPoints.append(newDataPoint)
-        setup = newDataPoint.setup
-        file_obj.close()
 
     elif action == "notifyStop":
         newDataPoint = dataPoint(time.time())
@@ -465,7 +483,7 @@ while True:
         dataPoints.append(newDataPoint)
 
     elif action == "exit":
-        print "goodbye"
+        print "Goodbye"
         break
         
     time.sleep(1) #sleep for 1 second before continuing the loop 

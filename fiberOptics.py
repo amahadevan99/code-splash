@@ -86,7 +86,7 @@ line_sleeves = {'A': "r", 'B': "c", 'C': '0.75', 'D': "y", 'E': "0.5"}
 line_connectors = {'A': '-', 'B': '--'}
 
 #COUPLERS DICTIONARY
-line_couplers = {'A': '-', 'B': '--', 'C': '---'}
+line_couplers = {'A': 'r', 'B': 'c', 'C': 'y'}
 
 #ACTIONS
 known_actions = ["enterData", "printData", "makeFigure", "save", "load", "notifyStop", "exit"]

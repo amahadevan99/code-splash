@@ -65,7 +65,7 @@ kc_setup_dict = {'F': kc_setup_F, 'FF': kc_setup_FF, 'FFF': kc_setup_FFF, 'FT': 
 
 #COUPLERS
 known_couplers = ["A", "B", "C"]
-color_couplers = {'A': "b", 'B':"g", 'C':"m" }
+color_couplers = {'A': "b", 'B': "g", 'C': "m" }
 couplers = dict([('A', "New coupler"), ('B', "Old coupler"), ('C', "Broken coupler")])
 
 #FIBERS
@@ -84,6 +84,9 @@ line_sleeves = {'A': "r", 'B': "c", 'C': '0.75', 'D': "y", 'E': "0.5"}
 
 #CONNECTORS DICTIONARY
 line_connectors = {'A': '-', 'B': '--'}
+
+#COUPLERS DICTIONARY
+line_couplers = {'A': '-', 'B': '--', 'C': '---'}
 
 #ACTIONS
 known_actions = ["enterData", "printData", "makeFigure", "save", "load", "notifyStop", "exit"]
@@ -129,7 +132,7 @@ class dataPoint(object):
     def printToTerminal(self):
         print str(self.name) + " " + str(self.setup)
         for col in kc_dict[self.setup]:
-            print "    value stored for "+col+" : "+str(self.data[col])
+            print "value stored for "+col+" : "+str(self.data[col])
 
 #---------------------------------------------------------------------
 
@@ -144,7 +147,7 @@ def readSetup(inSetup):
 #saves a list of dataPoints to a file
 def save(dataPoints):
     if not dataPoints:
-        "There is nothing to save"
+        print "There is nothing to save."
 
     else:
         filename = raw_input("what filename do you want to use to save the data?")
@@ -162,20 +165,19 @@ def save(dataPoints):
 def assignNumber(fiber):
     return int(list(fiber)[5])
 
-def getTime (dataPoint):
-    print dataPoint.data['minute']
+def getTime(dataPoint):
+    #print dataPoint.data['minute']
     return datetime.datetime(dataPoint.data['year'], dataPoint.data['month'], dataPoint.data['day'], \
         dataPoint.data['hour'], dataPoint.data['minute'])
 
-def definePower (inPower):
+def definePower(inPower):
     power = None
     for range in powerList:
-        if inPower>= range['min'] and inPower< range['max']:
+        if inPower >= range['min'] and inPower < range['max']:
             power = range['name']
         if not power:
-            print "This power is out of range. Power = "+inPower+" !!"
-            #print str(inPower)
-    return power
+            print "This power is out of range. Power = " + inPower + "!!"
+    return [power, inPower]
 
 #given a position and a dataPoint, gets the information about the fiber in this position
 def getFiberInfo(position, dataPoint):
@@ -184,15 +186,14 @@ def getFiberInfo(position, dataPoint):
         info = {'time': getTime(dataPoint), 'pos': position, 'coupler': dataPoint.data['coupler'], 'firstConnector': \
         dataPoint.data["fiber"+str(position)+"FirstConnector"], 'transmission': \
         dataPoint.data['greenPowerOut1(mW)']/dataPoint.data['greenPowerIn(mW)'], 'power': \
-        definePower(dataPoint.data['greenPowerIn(mW)'])}
-    elif position == 2 or position==3:
+        definePower(dataPoint.data['greenPowerIn(mW)'])[1]}
+    elif position == 2 or position == 3:
         info = {'time': getTime(dataPoint), 'pos': position, 'sleeve': dataPoint.data["sleeve"+str(position-1)], \
         'firstConnector': dataPoint.data["fiber"+str(position)+"FirstConnector"], 'transmission': \
         dataPoint.data["greenPowerOut"+str(position)+"(mW)"]/dataPoint.data["greenPowerOut"+str(position-1)+"(mW)"], \
-        'power': definePower(dataPoint.data["greenPowerOut"+str(position-1)+"(mW)"])}
+        'power': definePower(dataPoint.data["greenPowerOut"+str(position-1)+"(mW)"])[1]}
     else:
         print "This position of the fiber is not possible"
-
     return info
 
 #returns a dictionary with the information (time, position, etc.) of a particular fiber, given the fiber and a data point.
@@ -201,7 +202,6 @@ def getFiberInDataPoint(dataPoint, fiber):
     fiberInDataPointInfo = {}
     if fiber not in known_fibers:
         print "Sorry I do not recognize this fiber"
-
     else:
         for fib in known_fibers_setup:
             if fib in dataPoint.data.keys() and dataPoint.data[fib] == fiber:
@@ -212,7 +212,7 @@ def getFiberInDataPoint(dataPoint, fiber):
     return fiberInDataPointInfo
 
 #goes through a list of dataPoints extracting the information pertaining to a particular fiber
-def getFiberHistory (fiber, dataPoints):
+def getFiberHistory(fiber, dataPoints):
     fiberInfo = [] #list of dictionaries
     actualFiber = {}
     if fiber not in known_fibers:
@@ -232,32 +232,39 @@ def getFiberHistory (fiber, dataPoints):
 
 #sets the type/color/etc. of lines of the plots, given a dictionary
 def defineArgs(point):
+    #print point
     selectedColor = 'k'
     selectedStyle = ':'
     selectedWidth = 0
-    if 'coupler' in point:
-        selectedColor = line_couplers[point['coupler']]
-    else:
-        selectedColor = color_couplers[point['sleeve']]
-    selectedWidth = -2*point['position']+8
-    selectedStyle = line_connectors[point['firstConnector']]
-    return {'color': selectedColor,'linestyle':selectedStyle, 'markerstyle':"none", 'label':None, 'linewidth':selectedWidth}
+    if point != {'NOT': "NOT"}:
+        if 'coupler' in point:
+            selectedColor = line_couplers[point['coupler']]
+        else:
+            selectedColor = color_couplers[point['sleeve']]
+        selectedWidth = -2*point['pos']+8
+        selectedStyle = line_connectors[point['firstConnector']]
+    return {'color': selectedColor,'linestyle':selectedStyle, 'marker':None, 'label':None, 'linewidth':selectedWidth}
 
 #defines the plot to be drawn according to the power level
-def selectedPlot(power, listOfPlots):
-    for i, plot in listOfPlots:
+def selectPlot(power, listOfPlots):
+    i = 0
+    while i<len(listOfPlots):
         if power >= powerList[i]['min'] and power < powerList[i]['max']:
             break
-    return plot
+        else:
+            i = i+1
+    #print power
+    return listOfPlots[i]
 
-#sets the labels of the plots according to the list of power
+#sets the labels of the plots according to the list of powers
 def setPlotLabels(listOfPlots):
-    for i, plots in listOfPlots:
-        plots.set_ylabel(powerList[i]['name'] + "Trans")
-        plots.set_xlabel("Time")
+    i = 0
+    while i<len(listOfPlots):
+        listOfPlots[i].set_ylabel(powerList[i]['name'] + "Trans")
+        listOfPlots[i].set_xlabel("Time")
+        i = i+1
 
-
-#defines and sets the list of plots according to the list of power
+#makes and returns a list of subplots, one for each power category
 def createPlots():
     plotsList = []
     length = len(powerList)
@@ -285,16 +292,35 @@ def timeToValue(inDT, unit):
         pass
     return time
 
+'''
+#returns the relevant plot for a given point
+def selectPlot(inpwr, plotList):
+    #print inpwr
+    #print plotList
+    i = 0
+    while i < len(powerList):
+        if inpwr == powerList[i]['name']:
+            print "found"
+            break
+        else:
+            i = i + 1
+    #print i
+    if i >= len(powerList):
+        print "not found"
+        return [{}]
+    return plotList[i]
+
+'''
 #---------------------------------------------------------------------
 
 #takes in a list of dictionaries (the output from getFiberHistory()) and makes a plot
 def plotMe(data, unit):
     fig = plt.figure()
     plotList = createPlots()
-    #ax_H = plt.subplot(2,1,1) #2 rows, 1 column, 1 at panel
+    #ax_H = plt.subplot(2,1,1) #2 rows, 1 column, 1st panel
     #ax_L = plt.subplot(2,1,2)
     #plotList = [ax_H, ax_L]
-    selectedPlot = None
+    #selectedPlot = None
     passing = True
     totalTime = datetime.timedelta()
     totalHTime = datetime.timedelta()
@@ -315,14 +341,16 @@ def plotMe(data, unit):
     x = []
     y = []
     for point in data:
-        print point
+        #print point
         if 'NOT' in point:
             if not passing:
                 passing = True
                 kwargs = defineArgs(point)
+                #print previousPower
                 selectPlot(previousPower, plotList).plot(x,y,**kwargs)
         else:
-            actualPower = definePower(point['power'])
+            actualPower = definePower(point['power'])[1]
+            #print actualPower
             actualTime = point['time']
             if passing:
                 passing = False
@@ -340,7 +368,7 @@ def plotMe(data, unit):
             y.append(point['transmission'])
             previousTime = actualTime
             previousPower = actualPower
-            #ax_H.plot(x,y,color=assignedColor,linestyle=assignedStyle, markerstyle="none", label=None, linewidth=assignedWidth)
+            #ax_H.plot(x,y,color=assignedColor,linestyle=assignedStyle, marker=None, label=None, linewidth=assignedWidth)
 
     xmin = numpy.infty
     xmax = - numpy.infty
@@ -396,6 +424,7 @@ plotMe(getFiberHistory("1A", dataPoints), 'h')
 
 
 #---------------------------------------------------------------------
+
 '''
 #USER INTERFACE
 while True:
